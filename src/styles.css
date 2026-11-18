@@ -1,4 +1,5 @@
-@import "@fontsource-variable/manrope/index.css";
+@import "@fontsource-variable/onest/index.css";
+@import "@fontsource-variable/unbounded/index.css";
 @import "@fontsource/instrument-serif/400.css";
 @import "@fontsource/instrument-serif/400-italic.css";
 
@@ -10,13 +11,14 @@
   --line: rgba(255, 255, 255, 0.09);
   --line-strong: rgba(255, 255, 255, 0.18);
   --text: #f4f6f7;
-  --muted: #9aa4ac;
-  --muted-2: #737d85;
+  --muted: #b7c0c8;
+  --muted-2: #8e99a2;
   --acc: #ff4d17;
   --acc-2: #ffa14d;
   --acc-dim: rgba(255, 77, 23, 0.12);
   --ok: #7ee787;
-  --font: "Manrope Variable", "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font: "Onest Variable", "Onest", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --display: "Unbounded Variable", "Unbounded", "Onest Variable", system-ui, sans-serif;
   --serif: "Instrument Serif", Georgia, serif;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --pad: clamp(20px, 5vw, 64px);
@@ -145,10 +147,11 @@ p {
 /* ---------- typography ---------- */
 
 .display {
-  font-size: clamp(2.4rem, 6.6vw, 5.5rem);
-  line-height: 0.95;
-  letter-spacing: -0.045em;
-  font-weight: 300;
+  font-family: var(--display);
+  font-size: clamp(2rem, 5.2vw, 4.4rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-weight: 500;
   text-transform: uppercase;
   margin: 0;
 }
@@ -164,10 +167,11 @@ p {
 }
 
 .h2 {
-  font-size: clamp(1.9rem, 4.4vw, 3.4rem);
-  line-height: 1.02;
-  letter-spacing: -0.035em;
-  font-weight: 350;
+  font-family: var(--display);
+  font-size: clamp(1.6rem, 3.6vw, 2.9rem);
+  line-height: 1.06;
+  letter-spacing: -0.025em;
+  font-weight: 500;
   text-transform: uppercase;
 }
 
@@ -180,9 +184,10 @@ p {
 }
 
 .h3 {
-  font-size: clamp(1.1rem, 1.6vw, 1.35rem);
-  font-weight: 600;
-  letter-spacing: -0.02em;
+  font-family: var(--display);
+  font-size: clamp(1rem, 1.4vw, 1.2rem);
+  font-weight: 500;
+  letter-spacing: -0.01em;
 }
 
 .eyebrow {
@@ -254,7 +259,7 @@ p {
   background: linear-gradient(180deg, #ff5f2b 0%, #ee420f 100%);
   border-color: #ff5a26;
   color: #120804;
-  box-shadow: 0 14px 34px -16px rgba(255, 77, 23, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.24);
+  box-shadow: 0 10px 24px -14px rgba(255, 77, 23, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.22);
 }
 
 .btn--primary:hover {
@@ -384,6 +389,7 @@ p {
   padding-top: clamp(92px, 11vh, 132px);
   padding-bottom: clamp(36px, 5vw, 64px);
   position: relative;
+  overflow: clip;
 }
 
 .hero__grid {
@@ -429,9 +435,9 @@ p {
 
 .hero__note {
   margin-top: 18px;
-  font-size: 12px;
-  color: var(--muted-2);
-  max-width: 40ch;
+  font-size: 12.5px;
+  color: var(--muted);
+  max-width: 42ch;
 }
 
 .hero__visual {
@@ -586,8 +592,8 @@ p {
 
 .marquee {
   border-block: 1px solid var(--line);
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
   padding-block: 18px;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.015);
@@ -1584,4 +1590,237 @@ p {
 
 .work__meta {
   font-size: 11.5px;
+}
+
+
+/* ── hero visual: фото до/после + плавающие карточки ───────── */
+.hv {
+  position: relative;
+  isolation: isolate;
+}
+
+.hv__glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  opacity: 0.55;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.hv__glow--a {
+  width: 62%;
+  aspect-ratio: 1;
+  top: -14%;
+  right: -10%;
+  background: radial-gradient(circle, rgba(255, 77, 23, 0.55), rgba(255, 77, 23, 0) 68%);
+  animation: hvFloat 13s ease-in-out infinite;
+}
+
+.hv__glow--b {
+  width: 52%;
+  aspect-ratio: 1;
+  bottom: -18%;
+  left: -12%;
+  background: radial-gradient(circle, rgba(90, 140, 255, 0.42), rgba(90, 140, 255, 0) 70%);
+  animation: hvFloat 17s ease-in-out infinite reverse;
+}
+
+@keyframes hvFloat {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(-18px, 22px, 0) scale(1.08); }
+}
+
+.hv__frame {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  border-radius: 26px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #0a0c10;
+  box-shadow:
+    0 40px 90px -30px rgba(0, 0, 0, 0.85),
+    0 2px 0 rgba(255, 255, 255, 0.06) inset;
+  cursor: ew-resize;
+  touch-action: none;
+  transform-style: preserve-3d;
+  transition: transform 0.5s var(--ease), box-shadow 0.5s var(--ease);
+}
+
+.hv__frame.is-drag {
+  transition: box-shadow 0.3s var(--ease);
+  box-shadow:
+    0 50px 110px -30px rgba(0, 0, 0, 0.9),
+    0 0 0 1px rgba(255, 77, 23, 0.35);
+}
+
+.hv__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+  -webkit-user-drag: none;
+  filter: saturate(0.95) contrast(1.05);
+}
+
+.hv__before {
+  position: absolute;
+  inset: 0;
+  will-change: clip-path;
+}
+
+.hv__tag {
+  position: absolute;
+  top: 16px;
+  z-index: 3;
+  font-size: 9.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border-radius: 999px;
+  color: rgba(255, 255, 255, 0.82);
+  background: rgba(9, 11, 14, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  pointer-events: none;
+}
+
+.hv__tag--before { left: 16px; }
+.hv__tag--after {
+  right: 16px;
+  border-color: rgba(255, 77, 23, 0.4);
+  color: #ffd9c9;
+}
+
+.hv__line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), #fff 12%, #fff 88%, rgba(255, 255, 255, 0.05));
+  box-shadow: 0 0 24px rgba(255, 77, 23, 0.55);
+  transform: translateX(-1px);
+  z-index: 2;
+}
+
+.hv__grip {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 42px;
+  height: 42px;
+  margin: -21px 0 0 -21px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: rgba(12, 14, 18, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.45), 0 0 0 5px rgba(255, 255, 255, 0.05);
+  transition: transform 0.3s var(--ease), background 0.3s var(--ease);
+}
+
+.hv__frame:hover .hv__grip,
+.hv__frame.is-drag .hv__grip {
+  transform: scale(1.08);
+  background: rgba(255, 77, 23, 0.9);
+}
+
+.hv__hint {
+  position: absolute;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  z-index: 3;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.75);
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(9, 11, 14, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(10px);
+  transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
+  pointer-events: none;
+}
+
+.hv__hint.is-off {
+  opacity: 0;
+  transform: translate(-50%, 8px);
+}
+
+/* плавающие карточки */
+.hv__chip {
+  position: absolute;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 10px 13px;
+  border-radius: 14px;
+  background: rgba(16, 19, 23, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 16px 36px -20px rgba(0, 0, 0, 0.95);
+  font-size: 12px;
+  color: var(--muted);
+  animation: hvBob 7s ease-in-out infinite;
+}
+
+.hv__chip b {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.hv__chip span {
+  color: var(--muted-2);
+  font-size: 11px;
+}
+
+.hv__chip--time {
+  left: -14px;
+  bottom: 34px;
+  animation-delay: -1.5s;
+}
+
+.hv__chip--paint {
+  right: -14px;
+  top: 26px;
+  animation-delay: -3.4s;
+}
+
+.hv__chip--price {
+  right: -8px;
+  bottom: -16px;
+  animation-delay: -5s;
+}
+
+.hv__chip--price b {
+  color: var(--acc-2);
+  font-size: 14px;
+}
+
+@keyframes hvBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-9px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hv__glow,
+  .hv__chip {
+    animation: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .hv__frame { border-radius: 20px; }
+  .hv__chip { font-size: 11px; padding: 9px 12px; border-radius: 13px; }
+  .hv__chip--time { left: 10px; bottom: 10px; }
+  .hv__chip--price { right: 10px; top: 10px; bottom: auto; }
+  .hv__grip { width: 42px; height: 42px; margin: -21px 0 0 -21px; }
 }

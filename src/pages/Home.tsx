@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { DentWipe } from "../components/Dent";
+import { HeroVisual } from "../components/HeroVisual";
 import { Works } from "../components/Works";
 import { Reveal, RevealLines } from "../components/Reveal";
 import { Marquee } from "../components/Marquee";
@@ -99,7 +99,7 @@ export default function Home() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 1.1, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
           >
-            <DentWipe auto />
+            <HeroVisual auto />
           </motion.div>
         </div>
       </section>
@@ -131,32 +131,6 @@ export default function Home() {
               </Reveal>
             ))}
           </div>
-        </div>
-      </section>
-
-      <section className="section section--tight">
-        <div className="shell split">
-          <Reveal>
-            <span className="eyebrow">До и после</span>
-            <h2 className="h2" style={{ marginTop: 16 }}>
-              Та же панель, <em>та же краска</em>
-            </h2>
-            <p className="lead" style={{ marginTop: 18 }}>
-              Потяните ползунок: слева вмятина, справа — та же панель после работы. Ни слоя шпаклёвки, ни
-              нового лака: только металл, возвращённый в заводскую форму.
-            </p>
-            <div className="hero__meta" style={{ marginTop: 22 }}>
-              <span>
-                <i className="dot" /> толщиномер показывает заводскую толщину
-              </span>
-              <span>
-                <i className="dot" /> гарантия 12 месяцев
-              </span>
-            </div>
-          </Reveal>
-          <Reveal delay={0.12}>
-            <DentWipe initial={52} />
-          </Reveal>
         </div>
       </section>
 
