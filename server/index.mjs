@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
 import express from "express";
+import { startBot } from "./bot.mjs";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
 const DATA = path.join(ROOT, "data");
@@ -17,6 +18,8 @@ const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || "";
 const TG_IP = process.env.TELEGRAM_API_IP || "";
 const TG_BASE = TG_IP ? `https://${TG_IP}/bot${BOT_TOKEN}` : `https://api.telegram.org/bot${BOT_TOKEN}`;
 const SECRET = process.env.TOKEN_SECRET || "smeta-local-secret";
+// опрос Telegram должен идти только с одного сервера, иначе 409 Conflict
+const BOT_POLLING = process.env.BOT_POLLING !== "0";
 
 fs.mkdirSync(PHOTOS, { recursive: true });
 
@@ -253,4 +256,6 @@ app.listen(PORT, () => {
   console.log(`smeta server → http://localhost:${PORT}`);
   if (ADMIN_PASSWORD === "admin") console.log("⚠ пароль админки по умолчанию: admin (задайте ADMIN_PASSWORD)");
   if (!BOT_TOKEN) console.log("ℹ TELEGRAM_BOT_TOKEN не задан — уведомления в Telegram отключены");
+  else if (BOT_POLLING) startBot({ token: BOT_TOKEN, base: TG_BASE, ownerChatId: process.env.TELEGRAM_CHAT_ID || "" });
+  else console.log("ℹ BOT_POLLING=0 — команды бота на этом сервере выключены (уведомления работают)");
 });
