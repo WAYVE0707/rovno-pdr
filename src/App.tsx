@@ -16,22 +16,31 @@ function ScrollToTop() {
   return null;
 }
 
+function Shell() {
+  const { pathname } = useLocation();
+  return (
+    <>
+      <ScrollToTop />
+      <Nav />
+      <main key={pathname} className="page">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/calc" element={<Calc />} />
+          <Route path="/thanks" element={<Thanks />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="*" element={<Home />} />
+        </Routes>
+      </main>
+      <Footer />
+    </>
+  );
+}
+
 export default function App() {
   return (
     <ConfigProvider>
       <BrowserRouter>
-        <ScrollToTop />
-        <Nav />
-        <main>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/calc" element={<Calc />} />
-            <Route path="/thanks" element={<Thanks />} />
-            <Route path="/admin" element={<Admin />} />
-            <Route path="*" element={<Home />} />
-          </Routes>
-        </main>
-        <Footer />
+        <Shell />
       </BrowserRouter>
     </ConfigProvider>
   );

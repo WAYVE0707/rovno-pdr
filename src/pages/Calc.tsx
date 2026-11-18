@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { preset } from "../lib/preset";
 import { useConfig } from "../lib/config";
 import { calculate, label, rub, type Answers } from "../lib/calc";
+import { CarMap } from "../components/CarMap";
 import { compressImage, submitLead } from "../lib/api";
 
 const SCREENS = [
@@ -138,6 +139,8 @@ export default function Calc() {
             <h2 className="question">{current.title}</h2>
             <p className="question-sub">{current.sub}</p>
 
+            <div className={screen === 0 ? "calc__grid" : undefined}>
+              <div>
             {current.qs.map((qid) => {
               const step = preset.steps.find((s) => s.id === qid)!;
               return (
@@ -162,6 +165,9 @@ export default function Calc() {
                 </div>
               );
             })}
+              </div>
+              {screen === 0 && <CarMap zone={answers.zone ?? null} />}
+            </div>
 
             {screen === 3 && (
               <>

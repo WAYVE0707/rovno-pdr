@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { HeroVisual } from "../components/HeroVisual";
+import { HeroBackdrop } from "../components/HeroBackdrop";
 import { Works } from "../components/Works";
 import { Reveal, RevealLines } from "../components/Reveal";
 import { Marquee } from "../components/Marquee";
@@ -38,6 +39,7 @@ export default function Home() {
   return (
     <>
       <section className="hero">
+        <HeroBackdrop />
         <div className="shell hero__grid">
           <div className="hero__copy">
             <Reveal y={14}>

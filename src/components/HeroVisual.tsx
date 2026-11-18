@@ -87,6 +87,7 @@ export function HeroVisual({ before = "/works/hero/before.jpg", after = "/works/
         <span className="hv__tag hv__tag--before">до</span>
         <span className="hv__tag hv__tag--after">после</span>
 
+        <div className="hv__glass" style={{ left: `${pos}%` }} />
         <div className="hv__line" style={{ left: `${pos}%` }}>
           <span className="hv__grip" aria-hidden>
             <svg width="18" height="12" viewBox="0 0 18 12" fill="none">
