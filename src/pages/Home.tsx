@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { DentWipe } from "../components/Dent";
+import { Works } from "../components/Works";
 import { Reveal, RevealLines } from "../components/Reveal";
 import { Marquee } from "../components/Marquee";
 import { PriceTable } from "../components/PriceTable";
@@ -156,6 +157,23 @@ export default function Home() {
           <Reveal delay={0.12}>
             <DentWipe initial={52} />
           </Reveal>
+        </div>
+      </section>
+
+      <section className="section section--tight" id="works">
+        <div className="shell">
+          <Reveal>
+            <span className="eyebrow">Работы</span>
+            <h2 className="h2" style={{ marginTop: 16 }}>
+              Наведите на фото — <em>вмятина уйдёт</em>
+            </h2>
+          </Reveal>
+          <div style={{ marginTop: 30 }}>
+            <Works />
+          </div>
+          <p className="note" style={{ marginTop: 18 }}>
+            Наведите курсор или нажмите на фото — покажем результат.
+          </p>
         </div>
       </section>
 

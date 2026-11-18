@@ -13,6 +13,9 @@ const PORT = Number(process.env.PORT || 8787);
 
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "admin";
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || "";
+// если провайдер режет api.telegram.org, можно указать рабочий IP
+const TG_IP = process.env.TELEGRAM_API_IP || "";
+const TG_BASE = TG_IP ? `https://${TG_IP}/bot${BOT_TOKEN}` : `https://api.telegram.org/bot${BOT_TOKEN}`;
 const SECRET = process.env.TOKEN_SECRET || "smeta-local-secret";
 
 fs.mkdirSync(PHOTOS, { recursive: true });
@@ -209,7 +212,7 @@ if (fs.existsSync(DIST)) {
 
 async function notifyTelegram(lead) {
   const settings = readJson(SETTINGS, defaultSettings());
-  const chatId = settings.telegramChatId;
+  const chatId = settings.telegramChatId || process.env.TELEGRAM_CHAT_ID || "";
   if (!BOT_TOKEN || !chatId) return;
 
   const lines = [
@@ -225,7 +228,7 @@ async function notifyTelegram(lead) {
     `Открыть кабинет: ${process.env.PUBLIC_URL || "http://localhost:" + PORT}/admin`,
   ].filter(Boolean);
 
-  const base = `https://api.telegram.org/bot${BOT_TOKEN}`;
+  const base = TG_BASE;
   const first = lead.photos[0];
 
   if (first) {

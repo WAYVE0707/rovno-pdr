@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: rovno-pdr
+    runtime: node
+    plan: free
+    region: frankfurt
+    buildCommand: npm install && npm run build
+    startCommand: npm run server
+    envVars:
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: TOKEN_SECRET
+        generateValue: true
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: TELEGRAM_CHAT_ID
+        sync: false
+      - key: PUBLIC_URL
+        sync: false

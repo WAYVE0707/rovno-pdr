@@ -8,3 +8,4 @@ data/
 npm-debug.log*
 shot_*.png
 server.log
+shot_works*.png

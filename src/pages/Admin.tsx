@@ -194,6 +194,10 @@ export default function Admin() {
             <h2 className="h3" style={{ margin: "0 0 12px" }}>
               Бренд на сайте
             </h2>
+            <p className="note" style={{ marginBottom: 14 }}>
+              Фото в блоке «Работы» — демонстрационные. Замените файлы в папке public/works/demo (w1…w6) на
+              работы мастера, названия — в src/components/Works.tsx.
+            </p>
             <div className="settings-grid">
               <div className="field">
                 <label>Название</label>

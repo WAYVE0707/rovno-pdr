@@ -7,8 +7,8 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
-    "server": "node server/index.mjs",
-    "start": "npm run build && node server/index.mjs",
+    "server": "node --env-file-if-exists=.env server/index.mjs",
+    "start": "npm run build && node --env-file-if-exists=.env server/index.mjs",
     "calc:test": "python presets/calc.py"
   },
   "dependencies": {
