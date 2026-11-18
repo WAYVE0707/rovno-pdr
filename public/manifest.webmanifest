@@ -1,0 +1,15 @@
+{
+  "name": "РОВНО — удаление вмятин без покраски",
+  "short_name": "РОВНО",
+  "description": "Расчёт цены ремонта вмятины по фото за 60 секунд",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#07080A",
+  "theme_color": "#07080A",
+  "lang": "ru",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
