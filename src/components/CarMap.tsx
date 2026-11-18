@@ -72,9 +72,9 @@ export function CarMap({ zone }: { zone: string | null }) {
                 <stop offset="100%" stopColor="rgba(96,140,172,0.16)" />
               </linearGradient>
               <linearGradient id="cmScan" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stopColor="rgba(255,77,23,0)" />
-                <stop offset="50%" stopColor="rgba(255,77,23,0.18)" />
-                <stop offset="100%" stopColor="rgba(255,77,23,0)" />
+                <stop offset="0%" stopColor="rgba(255,200,170,0)" />
+                <stop offset="50%" stopColor="rgba(255,200,170,0.10)" />
+                <stop offset="100%" stopColor="rgba(255,200,170,0)" />
               </linearGradient>
               <filter id="cmGlow" x="-30%" y="-30%" width="160%" height="160%">
                 <feGaussianBlur stdDeviation="6" result="b" />
