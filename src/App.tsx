@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
+import { ConfigProvider } from "./lib/config";
 import { Nav } from "./components/Nav";
 import { Footer } from "./components/Footer";
 import Home from "./pages/Home";
@@ -17,19 +18,21 @@ function ScrollToTop() {
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <ScrollToTop />
-      <Nav />
-      <main>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/calc" element={<Calc />} />
-          <Route path="/thanks" element={<Thanks />} />
-          <Route path="/admin" element={<Admin />} />
-          <Route path="*" element={<Home />} />
-        </Routes>
-      </main>
-      <Footer />
-    </BrowserRouter>
+    <ConfigProvider>
+      <BrowserRouter>
+        <ScrollToTop />
+        <Nav />
+        <main>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/calc" element={<Calc />} />
+            <Route path="/thanks" element={<Thanks />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="*" element={<Home />} />
+          </Routes>
+        </main>
+        <Footer />
+      </BrowserRouter>
+    </ConfigProvider>
   );
 }

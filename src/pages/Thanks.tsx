@@ -1,11 +1,12 @@
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { brand } from "../lib/preset";
+import { useBrand } from "../lib/config";
 import { rub } from "../lib/calc";
 
 type State = { range?: { low: number; high: number } | null };
 
 export default function Thanks() {
+  const brand = useBrand();
   const { state } = useLocation() as { state: State | null };
   const range = state?.range ?? null;
 

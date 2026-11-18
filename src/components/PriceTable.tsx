@@ -1,4 +1,4 @@
-import { preset } from "../lib/preset";
+import { useConfig } from "../lib/config";
 import { rub } from "../lib/calc";
 
 const SIZE_LABELS: Record<string, string> = {
@@ -22,6 +22,7 @@ function cell(value: number | null | undefined) {
 }
 
 export function PriceTable() {
+  const { rates } = useConfig();
   return (
     <div>
       <div className="price">
@@ -35,7 +36,7 @@ export function PriceTable() {
           <div className="price__row" key={size}>
             <span>{SIZE_LABELS[size]}</span>
             {CLASSES.map((c) => (
-              <span key={c}>{cell(preset.base_rates[c]?.[size])}</span>
+              <span key={c}>{cell(rates[c]?.[size])}</span>
             ))}
           </div>
         ))}

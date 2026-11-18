@@ -64,12 +64,25 @@ export function setLeadStatus(id: string, status: Lead["status"]) {
   });
 }
 
+export type BrandSettings = {
+  name: string;
+  tagline: string;
+  master: string;
+  city: string;
+  phone: string;
+  telegram: string;
+  hours: string;
+  years: number;
+  cars: number;
+};
+
 export type Settings = {
   city: string;
   phone: string;
   master: string;
   telegramChatId: string;
   baseRates: Record<string, Record<string, number | null> | null>;
+  brand?: BrandSettings;
 };
 
 export function getSettings() {

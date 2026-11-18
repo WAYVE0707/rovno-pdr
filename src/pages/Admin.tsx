@@ -12,7 +12,22 @@ import {
   getToken,
   type Lead,
   type Settings,
+  type BrandSettings,
 } from "../lib/api";
+
+function brandOf(s: Settings): BrandSettings {
+  return {
+    name: s.brand?.name ?? "РОВНО",
+    tagline: s.brand?.tagline ?? "PDR-студия",
+    master: s.master,
+    city: s.city,
+    phone: s.phone,
+    telegram: s.brand?.telegram ?? "https://t.me/",
+    hours: s.brand?.hours ?? "Ежедневно 9:00–21:00",
+    years: s.brand?.years ?? 7,
+    cars: s.brand?.cars ?? 0,
+  };
+}
 
 const STATUS: Record<Lead["status"], string> = {
   new: "Новая",
@@ -176,6 +191,52 @@ export default function Admin() {
 
         {tab === "settings" && settings && (
           <div>
+            <h2 className="h3" style={{ margin: "0 0 12px" }}>
+              Бренд на сайте
+            </h2>
+            <div className="settings-grid">
+              <div className="field">
+                <label>Название</label>
+                <input
+                  value={settings.brand?.name ?? ""}
+                  onChange={(e) =>
+                    setSettings({ ...settings, brand: { ...brandOf(settings), name: e.target.value } })
+                  }
+                />
+              </div>
+              <div className="field">
+                <label>Подпись под названием</label>
+                <input
+                  value={settings.brand?.tagline ?? ""}
+                  onChange={(e) =>
+                    setSettings({ ...settings, brand: { ...brandOf(settings), tagline: e.target.value } })
+                  }
+                />
+              </div>
+              <div className="field">
+                <label>Часы работы</label>
+                <input
+                  value={settings.brand?.hours ?? ""}
+                  onChange={(e) =>
+                    setSettings({ ...settings, brand: { ...brandOf(settings), hours: e.target.value } })
+                  }
+                />
+              </div>
+              <div className="field">
+                <label>Ссылка на Telegram</label>
+                <input
+                  value={settings.brand?.telegram ?? ""}
+                  onChange={(e) =>
+                    setSettings({ ...settings, brand: { ...brandOf(settings), telegram: e.target.value } })
+                  }
+                  placeholder="https://t.me/master"
+                />
+              </div>
+            </div>
+
+            <h2 className="h3" style={{ margin: "28px 0 12px" }}>
+              Контакты и уведомления
+            </h2>
             <div className="settings-grid">
               <div className="field">
                 <label>Мастер</label>

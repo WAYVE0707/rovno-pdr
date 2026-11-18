@@ -14,11 +14,13 @@ function ruleMessage(answers: Answers): string | null {
   return null;
 }
 
-export function calculate(answers: Answers): CalcResult {
+export type Rates = Record<string, Record<string, number | null> | null>;
+
+export function calculate(answers: Answers, ratesTable: Rates = preset.base_rates): CalcResult {
   const blocked = ruleMessage(answers);
   if (blocked) return { ok: false, message: blocked };
 
-  const rates = preset.base_rates[answers.dent_class];
+  const rates = ratesTable[answers.dent_class];
   if (!rates) return { ok: false, message: "Цену мастер назовёт после осмотра." };
 
   const base = rates[answers.size];

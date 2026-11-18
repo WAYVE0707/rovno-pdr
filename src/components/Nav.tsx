@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { brand } from "../lib/preset";
+import { useBrand } from "../lib/config";
 
 export function Nav() {
+  const brand = useBrand();
   const [scrolled, setScrolled] = useState(false);
   const { pathname } = useLocation();
 

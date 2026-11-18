@@ -40,7 +40,28 @@ function defaultSettings() {
     phone: "+7 900 000-00-00",
     telegramChatId: "",
     baseRates: preset.base_rates,
+    brand: {
+      name: "РОВНО",
+      tagline: "PDR-студия",
+      master: "Артём",
+      city: "Краснодар",
+      phone: "+7 900 000-00-00",
+      telegram: "https://t.me/",
+      hours: "Ежедневно 9:00–21:00",
+      years: 7,
+      cars: 4200,
+    },
   };
+}
+
+/** Публичная конфигурация: то, что видят клиенты на сайте. */
+function publicConfig() {
+  const s = readJson(SETTINGS, defaultSettings());
+  const brand = { ...defaultSettings().brand, ...(s.brand ?? {}) };
+  brand.master = s.master ?? brand.master;
+  brand.city = s.city ?? brand.city;
+  brand.phone = s.phone ?? brand.phone;
+  return { brand, rates: s.baseRates ?? preset.base_rates };
 }
 
 if (!fs.existsSync(LEADS)) writeJson(LEADS, []);
@@ -61,6 +82,8 @@ const app = express();
 app.use(express.json({ limit: "30mb" }));
 
 app.get("/api/health", (_req, res) => res.json({ ok: true }));
+
+app.get("/api/config", (_req, res) => res.json(publicConfig()));
 
 app.post("/api/login", (req, res) => {
   const { password } = req.body ?? {};
@@ -151,13 +174,27 @@ app.get("/api/settings", auth, (_req, res) => res.json({ settings: readJson(SETT
 app.put("/api/settings", auth, (req, res) => {
   const current = readJson(SETTINGS, defaultSettings());
   const next = req.body?.settings ?? req.body ?? {};
+  const brandIn = next.brand ?? {};
+  const brand = {
+    ...(current.brand ?? defaultSettings().brand),
+    ...Object.fromEntries(
+      ["name", "tagline", "master", "city", "phone", "telegram", "hours"].map((k) => [
+        k,
+        String(brandIn[k] ?? current.brand?.[k] ?? defaultSettings().brand[k]).slice(0, 120),
+      ]),
+    ),
+    years: Number(brandIn.years ?? current.brand?.years ?? defaultSettings().brand.years) || 0,
+    cars: Number(brandIn.cars ?? current.brand?.cars ?? defaultSettings().brand.cars) || 0,
+  };
+
   const merged = {
     ...current,
-    master: String(next.master ?? current.master).slice(0, 60),
-    city: String(next.city ?? current.city).slice(0, 60),
-    phone: String(next.phone ?? current.phone).slice(0, 40),
+    master: String(next.master ?? brand.master ?? current.master).slice(0, 60),
+    city: String(next.city ?? brand.city ?? current.city).slice(0, 60),
+    phone: String(next.phone ?? brand.phone ?? current.phone).slice(0, 40),
     telegramChatId: String(next.telegramChatId ?? current.telegramChatId).slice(0, 40),
     baseRates: next.baseRates ?? current.baseRates,
+    brand,
   };
   writeJson(SETTINGS, merged);
   res.json({ ok: true });

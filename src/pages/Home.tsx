@@ -5,7 +5,7 @@ import { Reveal, RevealLines } from "../components/Reveal";
 import { Marquee } from "../components/Marquee";
 import { PriceTable } from "../components/PriceTable";
 import { Faq } from "../components/Faq";
-import { brand } from "../lib/preset";
+import { useBrand } from "../lib/config";
 
 const CARDS = [
   {
@@ -33,6 +33,7 @@ const STEPS = [
 ];
 
 export default function Home() {
+  const brand = useBrand();
   return (
     <>
       <section className="hero">

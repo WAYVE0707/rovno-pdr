@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { preset } from "../lib/preset";
+import { useConfig } from "../lib/config";
 import { calculate, label, rub, type Answers } from "../lib/calc";
 import { compressImage, submitLead } from "../lib/api";
 
@@ -29,6 +30,7 @@ export default function Calc() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [sending, setSending] = useState(false);
   const [over, setOver] = useState(false);
+  const { rates } = useConfig();
   const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -48,7 +50,7 @@ export default function Calc() {
     localStorage.setItem(DRAFT_KEY, JSON.stringify({ answers, contact }));
   }, [answers, contact]);
 
-  const result = useMemo(() => calculate(answers), [answers]);
+  const result = useMemo(() => calculate(answers, rates), [answers, rates]);
 
   const setAnswer = (id: string, value: string) => setAnswers((a) => ({ ...a, [id]: value }));
 

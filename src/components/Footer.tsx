@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
-import { brand } from "../lib/preset";
+import { useBrand } from "../lib/config";
 
 export function Footer() {
+  const brand = useBrand();
   return (
     <footer className="footer">
       <div className="shell">
