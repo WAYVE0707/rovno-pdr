@@ -208,9 +208,40 @@ app.put("/api/settings", auth, (req, res) => {
 
 app.use("/uploads", express.static(PHOTOS, { maxAge: "7d" }));
 
+const esc = (s) =>
+  String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
+/** index.html с подставленным брендом: превью ссылки в Telegram/WhatsApp показывает имя мастера */
+function renderIndex(req) {
+  const settings = readJson(SETTINGS, defaultSettings());
+  const b = settings.brand || {};
+  const q = req.query;
+  const pick = (key, fallback, max) => {
+    const v = typeof q[key] === "string" ? q[key].trim() : "";
+    return (v || fallback || "").slice(0, max);
+  };
+  const name = pick("b", b.name, 28).toUpperCase();
+  const city = pick("c", b.city, 24);
+  const title = `${name} — ремонт вмятин без покраски${city ? ` · ${city}` : ""}`;
+  const desc = `Ремонт вмятин без покраски${city ? ` · ${city}` : ""}: заводское покрытие остаётся на месте. Расчёт цены по фото за 60 секунд, выезд по городу.`;
+  const ogTitle = `${name}${city ? " · " + city : ""} — ремонт вмятин без покраски`;
+  const origin = process.env.PUBLIC_URL || `${req.protocol}://${req.get("host")}`;
+  const ogImage = `${origin.replace(/\/$/, "")}/og.jpg`;
+
+  const html = fs.readFileSync(path.join(DIST, "index.html"), "utf8");
+  return html
+    .replace(/__TITLE__/g, esc(title))
+    .replace(/__OG_TITLE__/g, esc(ogTitle))
+    .replace(/__DESC__/g, esc(desc))
+    .replace(/__BRAND__/g, esc(name))
+    .replace(/__OG_IMAGE__/g, esc(ogImage));
+}
+
 if (fs.existsSync(DIST)) {
-  app.use(express.static(DIST));
-  app.get(/.*/, (_req, res) => res.sendFile(path.join(DIST, "index.html")));
+  app.use(express.static(DIST, { index: false }));
+  app.get(/.*/, (req, res) => {
+    res.type("html").send(renderIndex(req));
+  });
 }
 
 async function notifyTelegram(lead) {

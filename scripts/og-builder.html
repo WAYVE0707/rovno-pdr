@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<style>
+  @font-face { font-family: "Unbounded"; src: url("/fonts/unbounded.woff2") format("woff2"); font-weight: 200 900; }
+  @font-face { font-family: "Onest"; src: url("/fonts/onest.woff2") format("woff2"); font-weight: 100 900; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { width: 1200px; height: 630px; background: #07080a; overflow: hidden; }
+  .wrap { position: relative; width: 1200px; height: 630px; display: flex; }
+  .bg { position: absolute; inset: 0; background: url("/works/hero/before.jpg") center/cover; filter: blur(26px) brightness(.45); opacity: .75; }
+  .shade { position: absolute; inset: 0; background: linear-gradient(90deg, #07080a 0%, rgba(7,8,10,.92) 42%, rgba(7,8,10,.55) 70%, rgba(7,8,10,.35) 100%); }
+  .left { position: relative; width: 660px; padding: 64px 0 0 64px; }
+  .eyebrow { font-family: Onest, sans-serif; font-size: 15px; letter-spacing: .18em; text-transform: uppercase; color: #ff6a35; margin-bottom: 22px; }
+  h1 { font-family: Unbounded, sans-serif; font-weight: 600; font-size: 62px; line-height: .96; letter-spacing: -.03em; color: #fff; text-transform: uppercase; }
+  h1 i { font-family: "Instrument Serif", serif; font-style: italic; color: #ff4d17; text-transform: none; letter-spacing: 0; }
+  .sub { font-family: Onest, sans-serif; font-size: 21px; line-height: 1.4; color: #b7c0c8; margin-top: 26px; width: 480px; }
+  .pill { display: inline-flex; gap: 10px; align-items: center; margin-top: 34px; font-family: Onest, sans-serif; font-size: 17px; color: #fff; background: rgba(255,77,23,.16); border: 1px solid rgba(255,77,23,.45); padding: 12px 20px; border-radius: 100px; }
+  .right { position: relative; flex: 1; display: grid; place-items: center; }
+  .shot { position: relative; width: 430px; height: 330px; border-radius: 20px; overflow: hidden; box-shadow: 0 40px 80px -30px rgba(0,0,0,.9); border: 1px solid rgba(255,255,255,.14); }
+  .shot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .divider { position: absolute; top: 0; bottom: 0; left: 52%; width: 3px; background: #ff4d17; box-shadow: 0 0 22px rgba(255,77,23,.9); }
+  .tag { position: absolute; font-family: Onest, sans-serif; font-size: 13px; letter-spacing: .1em; text-transform: uppercase; padding: 6px 12px; border-radius: 8px; background: rgba(7,8,10,.7); color: #fff; border: 1px solid rgba(255,255,255,.16); }
+  .tag.b { left: 12px; bottom: 12px; }
+  .tag.a { right: 12px; bottom: 12px; border-color: rgba(255,77,23,.5); color: #ff8a5c; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="bg"></div>
+    <div class="shade"></div>
+    <div class="left">
+      <div class="eyebrow">PDR · Выезд по городу</div>
+      <h1>Уберите<br/>вмятину,<br/>не трогая <i>краску</i></h1>
+      <div class="sub">Расчёт цены по фото за 60 секунд. Заводское покрытие остаётся на месте.</div>
+      <div class="pill">Вилка сразу · заявка в Telegram</div>
+    </div>
+    <div class="right">
+      <div class="shot">
+        <img src="/works/hero/before.jpg" alt="" />
+        <div class="divider"></div>
+        <div class="tag b">до</div>
+        <div class="tag a">после</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
