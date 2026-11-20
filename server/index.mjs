@@ -18,6 +18,8 @@ const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || "";
 const TG_IP = process.env.TELEGRAM_API_IP || "";
 const TG_BASE = TG_IP ? `https://${TG_IP}/bot${BOT_TOKEN}` : `https://api.telegram.org/bot${BOT_TOKEN}`;
 const SECRET = process.env.TOKEN_SECRET || "smeta-local-secret";
+// Render/Caddy стоят перед нами: без этого req.protocol всегда http
+app.set("trust proxy", 1);
 // опрос Telegram должен идти только с одного сервера, иначе 409 Conflict
 const BOT_POLLING = process.env.BOT_POLLING !== "0";
 
