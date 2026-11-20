@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Reveal } from "./Reveal";
+import { useConfig } from "../lib/config";
 
 type Work = {
   title: string;
@@ -9,10 +10,10 @@ type Work = {
 };
 
 /**
- * Демо-фото «до/после». При настройке под клиента заменяются на его работы:
- * достаточно положить файлы в public/works и поправить список ниже.
+ * Демо-фото «до/после». Когда мастер загрузил свои работы в админке,
+ * сервер отдаёт их в /api/config → works, и карточки подменяются автоматически.
  */
-const WORKS: Work[] = [
+const DEMO: Work[] = [
   {
     title: "Дверь, вмятина с заломом",
     meta: "35 мин · без покраски",
@@ -34,12 +35,20 @@ const WORKS: Work[] = [
 ];
 
 export function Works() {
+  const { works } = useConfig();
   const [pinned, setPinned] = useState<number | null>(null);
+
+  // Пары «до/после» из админки: w1→w2, w3→w4, w5→w6
+  const list: Work[] = DEMO.map((d, i) => {
+    const before = works?.[i * 2];
+    const after = works?.[i * 2 + 1];
+    return before && after ? { ...d, before, after } : d;
+  });
 
   return (
     <div className="works">
-      {WORKS.map((w, i) => (
-        <Reveal key={w.title} delay={i * 0.08}>
+      {list.map((w, i) => (
+        <Reveal key={w.before} delay={i * 0.08}>
           <button
             type="button"
             className={"work" + (pinned === i ? " is-on" : "")}

@@ -9,6 +9,7 @@ const DATA = path.join(ROOT, "data");
 const PHOTOS = path.join(DATA, "photos");
 const LEADS = path.join(DATA, "leads.json");
 const SETTINGS = path.join(DATA, "settings.json");
+const WORKS = path.join(DATA, "works");
 const DIST = path.join(ROOT, "dist");
 const PORT = Number(process.env.PORT || 8787);
 
@@ -22,6 +23,7 @@ const SECRET = process.env.TOKEN_SECRET || "smeta-local-secret";
 const BOT_POLLING = process.env.BOT_POLLING !== "0";
 
 fs.mkdirSync(PHOTOS, { recursive: true });
+fs.mkdirSync(WORKS, { recursive: true });
 
 const preset = JSON.parse(fs.readFileSync(path.join(ROOT, "presets", "pdr.json"), "utf8"));
 
@@ -61,13 +63,23 @@ function defaultSettings() {
 }
 
 /** Публичная конфигурация: то, что видят клиенты на сайте. */
+function worksList() {
+  const out = [];
+  for (let i = 1; i <= 6; i++) {
+    const file = path.join(WORKS, `w${i}.jpg`);
+    if (!fs.existsSync(file)) continue;
+    out.push(`/works/w${i}.jpg?v=${Math.round(fs.statSync(file).mtimeMs / 1000)}`);
+  }
+  return out.length ? out : null;
+}
+
 function publicConfig() {
   const s = readJson(SETTINGS, defaultSettings());
   const brand = { ...defaultSettings().brand, ...(s.brand ?? {}) };
   brand.master = s.master ?? brand.master;
   brand.city = s.city ?? brand.city;
   brand.phone = s.phone ?? brand.phone;
-  return { brand, rates: s.baseRates ?? preset.base_rates };
+  return { brand, rates: s.baseRates ?? preset.base_rates, works: worksList() };
 }
 
 if (!fs.existsSync(LEADS)) writeJson(LEADS, []);
@@ -208,6 +220,26 @@ app.put("/api/settings", auth, (req, res) => {
   res.json({ ok: true });
 });
 
+app.post("/api/works", auth, (req, res) => {
+  const slot = Number(req.body?.slot);
+  const data = String(req.body?.data ?? "");
+  if (!Number.isInteger(slot) || slot < 1 || slot > 6) return res.status(400).json({ error: "slot 1..6" });
+  const m = /^data:image\/(jpeg|png|webp);base64,(.+)$/.exec(data);
+  if (!m) return res.status(400).json({ error: "jpeg/png/webp expected" });
+  const buf = Buffer.from(m[2], "base64");
+  if (buf.length > 6 * 1024 * 1024) return res.status(413).json({ error: "max 6 MB" });
+  fs.writeFileSync(path.join(WORKS, `w${slot}.jpg`), buf);
+  res.json({ ok: true, works: worksList() });
+});
+
+app.delete("/api/works/:slot", auth, (req, res) => {
+  const slot = Number(req.params.slot);
+  if (!Number.isInteger(slot) || slot < 1 || slot > 6) return res.status(400).json({ error: "slot 1..6" });
+  fs.rmSync(path.join(WORKS, `w${slot}.jpg`), { force: true });
+  res.json({ ok: true, works: worksList() });
+});
+
+app.use("/works", express.static(WORKS, { maxAge: "1d" }));
 app.use("/uploads", express.static(PHOTOS, { maxAge: "7d" }));
 
 const esc = (s) =>

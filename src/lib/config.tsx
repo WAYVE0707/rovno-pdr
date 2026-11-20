@@ -7,9 +7,11 @@ export type Brand = typeof defaultBrand;
 export type PublicConfig = {
   brand: Brand;
   rates: Rates;
+  /** Фото работ мастера из админки: [до1, после1, до2, после2, до3, после3] */
+  works: string[] | null;
 };
 
-const FALLBACK: PublicConfig = { brand: defaultBrand, rates: preset.base_rates };
+const FALLBACK: PublicConfig = { brand: defaultBrand, rates: preset.base_rates, works: null };
 
 const Ctx = createContext<PublicConfig>(FALLBACK);
 
@@ -64,14 +66,21 @@ export function ConfigProvider({ children }: { children: ReactNode }) {
     let alive = true;
     fetch("/api/config")
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
-      .then((data: { brand?: Partial<Brand>; rates?: Rates }) => {
+      .then((data: { brand?: Partial<Brand>; rates?: Rates; works?: string[] | null }) => {
         if (!alive || !data) return;
         const brand: Brand = { ...defaultBrand, ...(data.brand ?? {}), ...demoOverrides() };
         if (!brand.phoneHref && brand.phone) {
           brand.phoneHref = "tel:" + brand.phone.replace(/[^\d+]/g, "");
         }
-        setConfig({ brand, rates: data.rates ?? preset.base_rates });
-        document.title = `${brand.name} — удаление вмятин без покраски`;
+        setConfig({
+          brand,
+          rates: data.rates ?? preset.base_rates,
+          works: data.works ?? null,
+        });
+        // заголовок уже собран сервером с городом — не перетираем его
+        if (!document.title.startsWith(brand.name)) {
+          document.title = `${brand.name} — ремонт вмятин без покраски`;
+        }
       })
       .catch(() => {
         /* офлайн или сервер без API — остаёмся на дефолтах */

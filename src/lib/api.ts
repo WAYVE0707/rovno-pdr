@@ -89,6 +89,17 @@ export function getSettings() {
   return api<{ settings: Settings }>("/api/settings");
 }
 
+export function uploadWork(slot: number, data: string) {
+  return api<{ ok: true; works: string[] | null }>("/api/works", {
+    method: "POST",
+    body: JSON.stringify({ slot, data }),
+  });
+}
+
+export function deleteWork(slot: number) {
+  return api<{ ok: true; works: string[] | null }>(`/api/works/${slot}`, { method: "DELETE" });
+}
+
 export function saveSettings(settings: Settings) {
   return api<{ ok: true }>("/api/settings", {
     method: "PUT",

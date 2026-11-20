@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { WorksUploader } from "../components/WorksUploader";
 import { preset } from "../lib/preset";
 import { label, rub } from "../lib/calc";
 import {
@@ -195,8 +196,7 @@ export default function Admin() {
               Бренд на сайте
             </h2>
             <p className="note" style={{ marginBottom: 14 }}>
-              Фото в блоке «Работы» — демонстрационные. Замените файлы в папке public/works/demo (w1…w6) на
-              работы мастера, названия — в src/components/Works.tsx.
+              Пока фото мастера не загружены, в блоке «Работы» показываются демонстрационные.
             </p>
             <div className="settings-grid">
               <div className="field">
@@ -237,6 +237,11 @@ export default function Admin() {
                 />
               </div>
             </div>
+
+            <h2 className="h3" style={{ margin: "28px 0 12px" }}>
+              Фото работ «до/после»
+            </h2>
+            <WorksUploader />
 
             <h2 className="h3" style={{ margin: "28px 0 12px" }}>
               Контакты и уведомления
