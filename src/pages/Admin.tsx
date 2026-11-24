@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { WorksUploader } from "../components/WorksUploader";
+import { DemoLink } from "../components/DemoLink";
 import { preset } from "../lib/preset";
 import { label, rub } from "../lib/calc";
 import {
@@ -237,6 +238,11 @@ export default function Admin() {
                 />
               </div>
             </div>
+
+            <h2 className="h3" style={{ margin: "28px 0 12px" }}>
+              Ссылка для переписки
+            </h2>
+            <DemoLink settings={settings} />
 
             <h2 className="h3" style={{ margin: "28px 0 12px" }}>
               Фото работ «до/после»

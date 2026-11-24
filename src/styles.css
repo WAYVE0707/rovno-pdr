@@ -1358,6 +1358,27 @@ p {
 }
 
 
+/* ── админка: ссылка для переписки ──────────────────────────────── */
+.demo-link {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 14px;
+  padding: 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.demo-link code {
+  flex: 1 1 320px;
+  min-width: 0;
+  font-size: 0.82rem;
+  color: #cfd7de;
+  overflow-wrap: anywhere;
+}
+.demo-link__actions { display: flex; gap: 8px; }
+
 /* ── админка: загрузка работ «до/после» ─────────────────────────── */
 .works-admin {
   display: grid;
