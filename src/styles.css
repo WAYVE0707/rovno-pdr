@@ -2132,3 +2132,172 @@ p {
   .cmap__car { max-width: 300px; }
   .cmap__cap { margin-top: 8px; margin-bottom: 18px; }
 }
+
+
+/* ───────── виджет для чужого сайта (/embed/:id) ───────── */
+.embed-body {
+  background: #07080a;
+  margin: 0;
+  padding: 14px;
+}
+.embed {
+  max-width: 560px;
+  margin: 0 auto;
+  background: linear-gradient(180deg, #0f1216, #0b0d10);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 18px 18px 16px;
+  font-family: var(--font);
+  color: var(--text);
+}
+.embed--msg {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--muted);
+}
+.embed__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 16px;
+}
+.embed__brand {
+  font-family: var(--display);
+  font-size: 17px;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+.embed__city {
+  font-size: 12px;
+  color: var(--muted-2);
+  margin-top: 4px;
+}
+.embed__badge {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--acc);
+  border: 1px solid rgba(255, 77, 23, 0.35);
+  border-radius: 999px;
+  padding: 4px 9px;
+  white-space: nowrap;
+}
+.embed__group { margin-bottom: 14px; }
+.embed__label {
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted-2);
+  margin-bottom: 8px;
+}
+.embed__chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  font: inherit;
+  font-size: 13px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color 0.18s, background 0.18s, color 0.18s;
+}
+.chip:hover { border-color: rgba(255, 255, 255, 0.35); }
+.chip--on {
+  background: var(--acc);
+  border-color: var(--acc);
+  color: #0a0a0a;
+  font-weight: 600;
+}
+.embed__price {
+  margin: 16px 0 14px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--line);
+  font-size: 14px;
+  color: var(--muted);
+}
+.embed__price b { color: var(--text); font-size: 17px; }
+.embed__price--muted { color: var(--muted-2); }
+.embed__row { display: flex; gap: 8px; margin-bottom: 10px; }
+.embed__input {
+  flex: 1;
+  min-width: 0;
+  font: inherit;
+  font-size: 14px;
+  padding: 11px 13px;
+  border-radius: 10px;
+  border: 1px solid var(--line-strong);
+  background: #0a0c0f;
+  color: var(--text);
+}
+.embed__input:focus { outline: none; border-color: var(--acc); }
+.embed__input--err { border-color: #e5533d; }
+.embed__photo {
+  font: inherit;
+  font-size: 13px;
+  padding: 11px 13px;
+  border-radius: 10px;
+  border: 1px dashed var(--line-strong);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.embed__photo:hover { color: var(--text); border-color: var(--acc); }
+.embed__submit {
+  flex: 1;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 11px 16px;
+  border-radius: 10px;
+  border: none;
+  background: var(--acc);
+  color: #0a0a0a;
+  cursor: pointer;
+}
+.embed__submit:disabled { opacity: 0.6; cursor: default; }
+.embed__err { color: #ff7a66; font-size: 12px; margin: -4px 0 10px; }
+.embed__note { font-size: 11px; color: var(--muted-2); line-height: 1.5; margin: 10px 0 0; }
+.embed--done { text-align: center; padding: 34px 22px; }
+.embed__mark {
+  width: 46px; height: 46px; margin: 0 auto 14px;
+  border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--acc); color: #0a0a0a; font-size: 22px; font-weight: 700;
+}
+.embed__title { font-family: var(--display); font-size: 19px; margin: 0 0 8px; }
+.embed__sub { color: var(--muted); font-size: 13px; margin: 0 0 16px; }
+@media (max-width: 420px) {
+  .embed__row { flex-direction: column; }
+  .embed__photo { width: 100%; }
+}
+
+/* ───────── конструктор виджета в админке ───────── */
+.embed-builder .field textarea {
+  width: 100%;
+  font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
+  background: #0a0c0f;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px;
+  resize: vertical;
+}
+.embed-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+.embed-row b { font-size: 14px; }
+@media (max-width: 640px) {
+  .embed-row { flex-direction: column; align-items: flex-start; }
+}

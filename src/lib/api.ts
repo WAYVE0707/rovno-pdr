@@ -132,3 +132,39 @@ export function compressImage(file: File, maxSide = 1400, quality = 0.72): Promi
     reader.readAsDataURL(file);
   });
 }
+
+/* ───────── виджет для чужого сайта ───────── */
+
+export type EmbedRec = {
+  id: string;
+  name: string;
+  city: string;
+  phone: string;
+  master: string;
+  chatId: string;
+  botToken: string;
+  accent: string;
+  createdAt?: string;
+};
+
+export function listEmbeds() {
+  return api<{ embeds: EmbedRec[] }>("/api/embeds");
+}
+
+export function saveEmbed(payload: Partial<EmbedRec>) {
+  return api<{ ok: true; id: string }>("/api/embeds", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export function deleteEmbed(id: string) {
+  return api<{ ok: true }>(`/api/embeds/${encodeURIComponent(id)}`, { method: "DELETE" });
+}
+
+export function probeBot(token: string) {
+  return api<{ ok: true; chatId: string; title: string }>("/api/embeds/probe", {
+    method: "POST",
+    body: JSON.stringify({ token }),
+  });
+}

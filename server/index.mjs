@@ -10,6 +10,8 @@ const PHOTOS = path.join(DATA, "photos");
 const LEADS = path.join(DATA, "leads.json");
 const SETTINGS = path.join(DATA, "settings.json");
 const WORKS = path.join(DATA, "works");
+const EMBEDS = path.join(DATA, "embeds.json");
+const EMBED_LEADS = path.join(DATA, "embed-leads.json");
 const DIST = path.join(ROOT, "dist");
 const PORT = Number(process.env.PORT || 8787);
 
@@ -220,6 +222,193 @@ app.put("/api/settings", auth, (req, res) => {
   res.json({ ok: true });
 });
 
+/* ───────────── Виджет «калькулятор + бот» для чужого сайта ───────────── */
+
+if (!fs.existsSync(EMBEDS)) writeJson(EMBEDS, []);
+if (!fs.existsSync(EMBED_LEADS)) writeJson(EMBED_LEADS, []);
+
+const embedHits = new Map();
+
+function readEmbeds() {
+  return readJson(EMBEDS, []);
+}
+
+function findEmbed(id) {
+  return readEmbeds().find((e) => e.id === id) ?? null;
+}
+
+function publicEmbed(e) {
+  return { id: e.id, name: e.name, city: e.city, phone: e.phone, master: e.master, accent: e.accent || "#FF6A1A" };
+}
+
+function maskEmbed(e) {
+  return { ...e, botToken: e.botToken ? "***" : "" };
+}
+
+function tgBase(token) {
+  return TG_IP ? `https://${TG_IP}/bot${token}` : `https://api.telegram.org/bot${token}`;
+}
+
+/** Публичная конфигурация виджета: бренд клиента + его прайс. */
+app.get("/api/embed/:id/config", (req, res) => {
+  const e = findEmbed(String(req.params.id));
+  if (!e) return res.status(404).json({ error: "not found" });
+  res.json({ embed: publicEmbed(e), rates: preset.base_rates });
+});
+
+/** Заявка из виджета: сохраняем и пересылаем в Telegram клиента. */
+app.post("/api/embed/:id/lead", async (req, res) => {
+  const e = findEmbed(String(req.params.id));
+  if (!e) return res.status(404).json({ error: "not found" });
+
+  const now = Date.now();
+  const hits = embedHits.get(e.id) ?? { count: 0, ts: now };
+  if (now - hits.ts > 10 * 60 * 1000) {
+    hits.count = 0;
+    hits.ts = now;
+  }
+  if (hits.count >= 12) return res.status(429).json({ error: "too many" });
+  hits.count += 1;
+  embedHits.set(e.id, hits);
+
+  const body = req.body ?? {};
+  const answers = body.answers ?? {};
+  const contact = body.contact ?? {};
+  const photos = Array.isArray(body.photos) ? body.photos.slice(0, 5) : [];
+
+  if (typeof contact.name !== "string" || contact.name.trim().length < 2) {
+    return res.status(400).json({ error: "name required" });
+  }
+  const digits = String(contact.phone ?? "").replace(/\D/g, "");
+  if (digits.length < 10) return res.status(400).json({ error: "phone required" });
+
+  const id = crypto.randomUUID();
+  const saved = [];
+  photos.forEach((dataUrl, i) => {
+    const m = /^data:image\/(jpeg|png|webp);base64,(.+)$/.exec(String(dataUrl));
+    if (!m) return;
+    const buf = Buffer.from(m[2], "base64");
+    if (buf.length > 6 * 1024 * 1024) return;
+    const file = `${id}-${i}.${m[1] === "jpeg" ? "jpg" : m[1]}`;
+    fs.writeFileSync(path.join(PHOTOS, file), buf);
+    saved.push(`/uploads/${file}`);
+  });
+
+  const range =
+    body.range && Number.isFinite(body.range.low) && Number.isFinite(body.range.high)
+      ? { low: Math.round(body.range.low), high: Math.round(body.range.high) }
+      : null;
+
+  const lead = {
+    id,
+    embedId: e.id,
+    createdAt: new Date().toISOString(),
+    status: "new",
+    answers,
+    range,
+    contact: {
+      name: contact.name.trim().slice(0, 80),
+      phone: String(contact.phone).trim().slice(0, 40),
+      address: String(contact.address ?? "").slice(0, 200),
+      comment: String(contact.comment ?? "").slice(0, 1000),
+    },
+    photos: saved,
+    source: String(body.source ?? "embed").slice(0, 200),
+  };
+
+  const all = readJson(EMBED_LEADS, []);
+  all.unshift(lead);
+  writeJson(EMBED_LEADS, all);
+
+  res.json({ ok: true, id });
+  notifyEmbed(e, lead).catch((err) => console.warn("embed telegram:", err.message));
+});
+
+app.get("/api/embeds", auth, (_req, res) => res.json({ embeds: readEmbeds().map(maskEmbed) }));
+
+app.get("/api/embeds/leads", auth, (_req, res) => res.json({ leads: readJson(EMBED_LEADS, []) }));
+
+app.post("/api/embeds", auth, (req, res) => {
+  const b = req.body ?? {};
+  const id = String(b.id ?? "").trim().toLowerCase() || crypto.randomBytes(4).toString("hex");
+  if (!/^[a-z0-9]{4,16}$/.test(id)) return res.status(400).json({ error: "id: 4–16 символов, латиница и цифры" });
+  const list = readEmbeds();
+  const idx = list.findIndex((x) => x.id === id);
+  const prev = idx >= 0 ? list[idx] : null;
+  const rec = {
+    id,
+    name: String(b.name ?? "PDR").slice(0, 40),
+    city: String(b.city ?? "").slice(0, 30),
+    phone: String(b.phone ?? "").slice(0, 25),
+    master: String(b.master ?? "").slice(0, 20),
+    chatId: String(b.chatId ?? "").slice(0, 30),
+    botToken: String(b.botToken ?? "").trim().slice(0, 90) || prev?.botToken || "",
+    accent: /^#[0-9a-f]{6}$/i.test(String(b.accent ?? "")) ? String(b.accent) : prev?.accent || "#FF6A1A",
+    createdAt: prev?.createdAt ?? new Date().toISOString(),
+  };
+  if (idx >= 0) list[idx] = rec;
+  else list.unshift(rec);
+  writeJson(EMBEDS, list);
+  res.json({ ok: true, id, embed: maskEmbed(rec) });
+});
+
+app.delete("/api/embeds/:id", auth, (req, res) => {
+  const list = readEmbeds().filter((e) => e.id !== String(req.params.id));
+  writeJson(EMBEDS, list);
+  res.json({ ok: true });
+});
+
+/** Достаём chat_id из бота клиента: он пишет /start, мы читаем getUpdates. */
+app.post("/api/embeds/probe", auth, async (req, res) => {
+  const token = String(req.body?.token ?? "").trim();
+  if (!/^\d{6,}:[A-Za-z0-9_-]{20,}$/.test(token)) {
+    return res.status(400).json({ error: "Это не похоже на токен бота" });
+  }
+  const r = await fetch(`${tgBase(token)}/getUpdates?limit=10`);
+  const data = await r.json().catch(() => null);
+  if (!data?.ok) return res.status(400).json({ error: "Telegram не принял токен", detail: data?.description });
+  const msg = [...(data.result ?? [])].reverse().find((u) => u.message?.chat?.id);
+  if (!msg) return res.status(404).json({ error: "Напишите боту /start и нажмите ещё раз" });
+  const chat = msg.message.chat;
+  res.json({ ok: true, chatId: String(chat.id), title: [chat.first_name, chat.username && "@" + chat.username].filter(Boolean).join(" ") });
+});
+
+async function notifyEmbed(e, lead) {
+  const token = e.botToken || BOT_TOKEN;
+  const chatId = e.chatId;
+  if (!token || !chatId) return;
+
+  const lines = [
+    `🚗 Заявка с сайта · ${e.name}`,
+    lead.range ? `Вилка: ${lead.range.low}–${lead.range.high} ₽` : "Вилка: по осмотру",
+    `${labelOf("zone", lead.answers.zone)} · ${labelOf("size", lead.answers.size)} · ${labelOf("dent_class", lead.answers.dent_class)}`,
+    `${labelOf("count", lead.answers.count)} · ${labelOf("urgency", lead.answers.urgency)} · ${labelOf("travel", lead.answers.travel)}`,
+    `Краска: ${labelOf("paint", lead.answers.paint)} · Доступ: ${labelOf("access", lead.answers.access)}`,
+    "",
+    `👤 ${lead.contact.name} · ${lead.contact.phone}`,
+    lead.contact.address ? `📍 ${lead.contact.address}` : "",
+    lead.contact.comment ? `💬 ${lead.contact.comment}` : "",
+  ].filter(Boolean);
+
+  const first = lead.photos[0];
+  if (first) {
+    const buf = fs.readFileSync(path.join(PHOTOS, path.basename(first)));
+    const form = new FormData();
+    form.append("chat_id", chatId);
+    form.append("caption", lines.join("\n").slice(0, 1024));
+    form.append("photo", new Blob([buf], { type: "image/jpeg" }), path.basename(first));
+    const r = await fetch(`${tgBase(token)}/sendPhoto`, { method: "POST", body: form });
+    if (!r.ok) throw new Error(await r.text());
+    return;
+  }
+  const r = await fetch(`${tgBase(token)}/sendMessage`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ chat_id: chatId, text: lines.join("\n"), disable_web_page_preview: true }),
+  });
+  if (!r.ok) throw new Error(await r.text());
+}
+
 app.post("/api/works", auth, (req, res) => {
   const slot = Number(req.body?.slot);
   const data = String(req.body?.data ?? "");
@@ -273,6 +462,12 @@ function renderIndex(req) {
 
 if (fs.existsSync(DIST)) {
   app.use(express.static(DIST, { index: false }));
+  // виджет для чужого сайта — отдельная страница без шапки и подвала
+  app.get("/embed/:id", (_req, res) => {
+    const file = path.join(DIST, "embed.html");
+    if (!fs.existsSync(file)) return res.status(503).send("виджет не собран");
+    res.type("html").send(fs.readFileSync(file, "utf8"));
+  });
   app.get(/.*/, (req, res) => {
     res.type("html").send(renderIndex(req));
   });

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Демо: калькулятор на сайте мастера</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        background: #f5f6f8;
+        color: #14181d;
+      }
+      .wrap { max-width: 900px; margin: 0 auto; padding: 48px 20px 120px; }
+      .logo { font-weight: 700; letter-spacing: 0.14em; font-size: 13px; color: #6b7280; }
+      h1 { font-size: 40px; line-height: 1.1; margin: 18px 0 14px; letter-spacing: -0.02em; }
+      p { color: #4b5563; line-height: 1.65; font-size: 17px; max-width: 640px; }
+      .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-top: 34px; }
+      .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 14px; padding: 18px; }
+      .card b { display: block; margin-bottom: 6px; }
+      .card span { color: #6b7280; font-size: 14px; }
+      .hint { margin-top: 40px; font-size: 14px; color: #6b7280; border-top: 1px dashed #d1d5db; padding-top: 18px; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="logo">КУЗОВОК · ВОРОНЕЖ</div>
+      <h1>Удаление вмятин без покраски</h1>
+      <p>
+        Это демонстрационная страница: так выглядит сайт мастера, у которого уже есть свой сайт.
+        Внизу справа — кнопка «Рассчитать цену». Клиент выбирает зону и размер вмятины, видит вилку
+        и отправляет заявку — она приходит в Telegram мастеру.
+      </p>
+      <div class="cards">
+        <div class="card"><b>Без покраски</b><span>Заводское покрытие остаётся на месте</span></div>
+        <div class="card"><b>От 30 минут</b><span>Одна вмятина — один визит</span></div>
+        <div class="card"><b>Гарантия</b><span>Оплата по факту работы</span></div>
+      </div>
+      <div class="hint">
+        Кнопку добавили одной строкой кода на эту страницу — сам сайт не переделывали.
+      </div>
+    </div>
+
+    <!-- одна строка, которую вставляют на сайт клиента -->
+    <script src="/w.js" data-id="kuzovok" data-label="Рассчитать цену" async></script>
+  </body>
+</html>
