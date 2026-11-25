@@ -225,6 +225,25 @@ app.put("/api/settings", auth, (req, res) => {
 /* ───────────── Виджет «калькулятор + бот» для чужого сайта ───────────── */
 
 if (!fs.existsSync(EMBEDS)) writeJson(EMBEDS, []);
+
+// демо-виджет: всегда существует, чтобы страница /demo-embed.html работала на свежем сервере
+if (!readJson(EMBEDS, []).some((e) => e.id === "demo")) {
+  const list = readJson(EMBEDS, []);
+  const b = readJson(SETTINGS, defaultSettings()).brand ?? defaultSettings().brand;
+  list.push({
+    id: "demo",
+    name: b.name || "РОВНО",
+    city: b.city || "Краснодар",
+    phone: b.phone || "",
+    master: b.master || "",
+    chatId: process.env.TELEGRAM_CHAT_ID || "",
+    botToken: "",
+    accent: "#FF4D17",
+    createdAt: new Date().toISOString(),
+    demo: true,
+  });
+  writeJson(EMBEDS, list);
+}
 if (!fs.existsSync(EMBED_LEADS)) writeJson(EMBED_LEADS, []);
 
 const embedHits = new Map();
